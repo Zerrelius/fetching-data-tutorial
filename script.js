@@ -121,6 +121,7 @@ function loadItems(){
     const itemsFromLocalStorage = localStorage.getItem('items');
     if (!itemsFromLocalStorage){
         items = [];
+        getAlbumData();
     } else {
         items = JSON.parse(itemsFromLocalStorage);
     }
@@ -128,11 +129,39 @@ function loadItems(){
     // console.log(items);
 }
 
+async function getAlbumData() {
+    const url = "https://jsonplaceholder.typicode.com/albums";
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+
+        const json = await response.json();
+        console.log(json);
+        console.log("Json Daten geladen!")
+
+        json.forEach((album) => {
+            const newData = {
+                id: Date.now(),
+                text: album.title
+            }
+            console.log(newData);
+
+            items.push(newData);
+        });
+        
+        renderItems();
+
+    } catch (error) {
+        console.error(error.message);
+    }
+};
+
 // Ablauf der Funktionsaufrufe 
 loadItems();
-renderItems();
 saveItems();
-
+renderItems();
 
 
 
